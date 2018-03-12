@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: marketresearch
+  namespace: gproject
+  labels:
+    name: marketresearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: marketresearch
+  template:
+    metadata:
+      labels:
+        name: marketresearch
+    spec:
+      restartPolicy: Always
+      containers:
+      - image: giovanejr/gproject-public
+        name: marketresearch
+        imagePullPolicy: Always
+        ports:
+        - name: marketresearch
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: ENV
+          value: production
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 80m
+            memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: marketresearch
+  name: marketresearch
+  namespace: gproject
+spec:
+  ports:
+  - name: marketresearch
+    port: 8080
+    protocol: TCP
+  selector:
+    name: marketresearch
+  sessionAffinity: None
+  type: ClusterIP

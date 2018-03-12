@@ -1,0 +1,54 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: giovanejr/gproject-mysql
+        args:
+          - "--ignore-db-dir=lost+found"
+        ports:
+        - containerPort: 3306
+          name: mysqlp
+        volumeMounts:
+        - name: gproject-mysql
+          mountPath: /var/lib/mysql
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - metadata:
+      name: gproject-mysql
+      annotations:
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mysql
+  name: mysql
+  namespace: gproject
+spec:
+  ports:
+  - name: mysqlp
+    port: 3306
+    protocol: TCP
+  selector:
+    app: mysql
+  sessionAffinity: None
+  type: ClusterIP

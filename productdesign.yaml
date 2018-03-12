@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: productdesign
+  namespace: gproject
+  labels:
+    name: productdesign
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: productdesign
+  template:
+    metadata:
+      labels:
+        name: productdesign
+    spec:
+      restartPolicy: Always
+      containers:
+      - image: giovanejr/gproject-public
+        name: productdesign
+        imagePullPolicy: Always
+        ports:
+        - name: productdesign
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: ENV
+          value: production
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 80m
+            memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: productdesign
+  name: productdesign
+  namespace: gproject
+spec:
+  ports:
+  - name: productdesign
+    port: 8080
+    protocol: TCP
+  selector:
+    name: productdesign
+  sessionAffinity: None
+  type: ClusterIP

@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: login
+  namespace: gproject
+  labels:
+    name: login
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: login
+  template:
+    metadata:
+      labels:
+        name: login
+    spec:
+      restartPolicy: Always
+      containers:
+      - image: giovanejr/gproject-login:11
+        name: login
+        imagePullPolicy: Always
+        ports:
+        - name: login
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: ENV
+          value: production
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 80m
+            memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: login
+  name: login
+  namespace: gproject
+spec:
+  ports:
+  - name: login
+    port: 8080
+    protocol: TCP
+  selector:
+    name: login
+  sessionAffinity: None
+  type: ClusterIP

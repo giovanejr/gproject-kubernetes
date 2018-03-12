@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hr
+  namespace: gproject
+  labels:
+    name: hr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: hr
+  template:
+    metadata:
+      labels:
+        name: hr
+    spec:
+      restartPolicy: Always
+      containers:
+      - image: giovanejr/gproject-public
+        name: hr
+        imagePullPolicy: Always
+        ports:
+        - name: hr
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: ENV
+          value: production
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 80m
+            memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: hr
+  name: hr
+  namespace: gproject
+spec:
+  ports:
+  - name: hr
+    port: 8080
+    protocol: TCP
+  selector:
+    name: hr
+  sessionAffinity: None
+  type: ClusterIP
