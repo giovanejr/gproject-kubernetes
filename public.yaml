@@ -17,7 +17,7 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-      - image: giovanejr/gproject-public
+      - image: giovanejr/gproject-public:18
         name: public
         imagePullPolicy: Always
         ports:
@@ -37,6 +37,9 @@ spec:
         securityContext:
           privileged: true
         lifecycle:
+#          preStart:
+#            exec:
+#              command: ["sed", "-i", "s:fserver:public:g", "/etc/apache2/apache2.conf"]
           postStart:
             exec:
               command: ["gcsfuse", "-o", "nonempty,allow_other", "--uid=33", "--gid=33", "--dir-mode", "750", "--file-mode", "640", "fs_public", "/var/www/html/files"]

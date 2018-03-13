@@ -17,7 +17,7 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-      - image: giovanejr/gproject-login:11
+      - image: giovanejr/gproject-login:14
         name: login
         imagePullPolicy: Always
         ports:

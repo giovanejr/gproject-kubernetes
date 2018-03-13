@@ -72,3 +72,4 @@ spec:
     app: nginx
   sessionAffinity: None
   type: LoadBalancer
+  loadBalancerIP: 35.224.84.188
